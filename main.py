@@ -9,42 +9,43 @@ screen = pygame.display.set_mode(size)
 
 class StartWindow:
     def __init__(self):
-        menu_background = pygame.image.load('картинка меню.png')
+        menu_background = pygame.image.load('Картинки/картинка меню.png')
         screen.fill((0, 0, 0))
         screen.blit(menu_background, (0, 0))
 
-        self.start_button = pygame.image.load('играть.png')
+        self.start_button = pygame.image.load('Картинки/играть.png')
         self.start_button = pygame.transform.scale(self.start_button, (678, 95))
         self.start_button_rect = self.start_button.get_rect(topleft=(302, 250))
         screen.blit(self.start_button, self.start_button_rect)
 
-        self.settings_button = pygame.image.load('настройки.png')
+        self.settings_button = pygame.image.load('Картинки/настройки.png')
         self.settings_button = pygame.transform.scale(self.settings_button, (678, 95))
         self.settings_button_rect = self.settings_button.get_rect(topleft=(302, 400))
         screen.blit(self.settings_button, self.settings_button_rect)
 
-        self.exit_button = pygame.image.load('выход.png')
+        self.exit_button = pygame.image.load('Картинки/выход.png')
         self.exit_button = pygame.transform.scale(self.exit_button, (678, 95))
         self.exit_button_rect = self.exit_button.get_rect(topleft=(302, 550))
         screen.blit(self.exit_button, self.exit_button_rect)
 
-        self.hover_start_button = pygame.image.load('играть реверс.png')
+        self.hover_start_button = pygame.image.load('Картинки/играть реверс.png')
         self.hover_start_button = pygame.transform.scale(self.hover_start_button, (678, 95))
         self.hover_start_button_rect = self.hover_start_button.get_rect(topleft=(302, 250))
 
-        self.hover_settings_button = pygame.image.load('настройки реверс.png')
+        self.hover_settings_button = pygame.image.load('Картинки/настройки реверс.png')
         self.hover_settings_button = pygame.transform.scale(self.hover_settings_button, (678, 95))
         self.hover_settings_button_rect = self.hover_settings_button.get_rect(topleft=(302, 400))
 
-        self.hover_exit_button = pygame.image.load('выход реверс.png')
+        self.hover_exit_button = pygame.image.load('Картинки/выход реверс.png')
         self.hover_exit_button = pygame.transform.scale(self.hover_exit_button, (678, 95))
         self.hover_exit_button_rect = self.hover_exit_button.get_rect(topleft=(302, 550))
 
         # музыка и звуки в менюшке
-        pygame.mixer.music.load("Main Theme.mp3")
+        pygame.mixer.music.load("Звуки/Main Theme.mp3")
         pygame.mixer.music.play(-1)
 
-        self.buttonclick_sound = pygame.mixer.Sound("buttondown_sound.mp3")
+        self.buttonclick_sound = pygame.mixer.Sound("Звуки/click button.mp3")
+
 
 class StartGame:
     def __init__(self):
