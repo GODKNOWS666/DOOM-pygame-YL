@@ -13,9 +13,9 @@ class StartWindow:
     def __init__(self):
         # все картинки для главного меню
         # бэкграунд
-        menu_background = pygame.image.load('Картинки/картинка меню.png')
+        self.menu_background = pygame.image.load('Картинки/картинка меню.png')
         screen.fill((0, 0, 0))
-        screen.blit(menu_background, (0, 0))
+        screen.blit(self.menu_background, (0, 0))
 
         # Кнопка "играть"
         self.start_button = pygame.image.load('Картинки/играть.png')
@@ -68,27 +68,33 @@ class StartWindow:
 
         # Кнопка "сложно" для изменения режима игры
         self.mode_hard = pygame.image.load('Картинки/сложно.png')
-        self.mode_hard = pygame.transform.scale(self.mode_hard, (319, 72))
-        self.mode_hard_rect = self.settings_window.get_rect(topleft=(750, 210))
+        self.mode_hard = pygame.transform.scale(self.mode_hard, (337, 61))
+        self.mode_hard_rect = self.settings_window.get_rect(topleft=(727, 210))
         screen.blit(self.mode_hard, self.mode_hard_rect)
 
         # Кнопка "легко" для изменения режима игры
         self.mode_easy = pygame.image.load('Картинки/легко.png')
-        self.mode_easy = pygame.transform.scale(self.mode_easy, (319, 72))
-        self.mode_easy_rect = self.settings_window.get_rect(topleft=(750, 210))
+        self.mode_easy = pygame.transform.scale(self.mode_easy, (337, 61))
+        self.mode_easy_rect = self.settings_window.get_rect(topleft=(727, 210))
         screen.blit(self.mode_easy, self.mode_easy_rect)
 
-        # Квадрат на котором будет расположена галочка
-        self.kvadrat = pygame.image.load('Картинки/квадрат для галочки.png')
-        self.kvadrat = pygame.transform.scale(self.kvadrat, (114, 104))
-        self.kvadrat_rect = self.settings_window.get_rect(topleft=(570, 420))
-        screen.blit(self.kvadrat, self.kvadrat_rect)
+        # Квадрат без галочки
+        self.no_check_mark = pygame.image.load('Картинки/квадрат без галочки.png')
+        self.no_check_mark = pygame.transform.scale(self.no_check_mark, (114, 104))
+        self.no_check_mark_rect = self.settings_window.get_rect(topleft=(570, 425))
+        screen.blit(self.no_check_mark, self.no_check_mark_rect)
 
-        # Галочка для вкл/выкл звука
-        self.check_mark = pygame.image.load('Картинки/зеленая галочка.png')
-        self.check_mark = pygame.transform.scale(self.check_mark, (159, 125))
-        self.check_mark_rect = self.settings_window.get_rect(topleft=(570, 400))
+        # Квадрат с галочкой
+        self.check_mark = pygame.image.load('Картинки/квадрат с галочкой.png')
+        self.check_mark = pygame.transform.scale(self.check_mark, (114, 104))
+        self.check_mark_rect = self.settings_window.get_rect(topleft=(570, 425))
         screen.blit(self.check_mark, self.check_mark_rect)
+
+        # кнопка выхода из настроек
+        self.exit_settings = pygame.image.load('Картинки/Кнопка выхода из настроек.png')
+        self.exit_settings = pygame.transform.scale(self.exit_settings, (115, 115))
+        self.exit_settings_rect = self.settings_window.get_rect(topleft=(1055, 105))
+        screen.blit(self.exit_settings, self.exit_settings_rect)
 
     # функция для выхода из игры
     def exit_game(self):
@@ -104,13 +110,18 @@ class StartGame:
 
 if __name__ == '__main__':
     pygame.init()
+    pygame.mixer.init()
     start_window = StartWindow()
     pygame.display.flip()
+    # переменные для проверки чего-либо
     # переменная для проверки на то, выведено ли окно настроек на экран
     setting_true = True
-    running = True
+    # переменная для проверки галочки
+    checkmark_check = False
     # переменная для проверки на сложность режима
     easy_or_hard = 0
+
+    running = True
     while running:
         events = pygame.event.get()
         for event in events:
@@ -150,6 +161,7 @@ if __name__ == '__main__':
 
                 # если никакого действия нет, то вернуть все в исходное положение
                 else:
+                    screen.blit(start_window.menu_background, (0, 0))
                     screen.blit(start_window.start_button, start_window.start_button_rect)
                     screen.blit(start_window.settings_button, start_window.settings_button_rect)
                     screen.blit(start_window.exit_button, start_window.exit_button_rect)
@@ -161,14 +173,35 @@ if __name__ == '__main__':
 
                 # если стоит сложный режим, то выводим картинку со сложным режимом
                 elif event.type == pygame.MOUSEBUTTONDOWN and start_window.mode_easy_rect.collidepoint(event.pos) and easy_or_hard == 0:
+                    start_window.buttonclick_sound.play()
                     screen.blit(start_window.mode_hard, start_window.mode_hard_rect)
                     easy_or_hard += 1
 
-                # если стоит легкий режим, то выводим картинку со сложным режимом
+                # если стоит легкий режим, то выводим картинку с легким режимом
                 elif event.type == pygame.MOUSEBUTTONDOWN and start_window.mode_hard_rect.collidepoint(event.pos) and easy_or_hard == 1:
                     start_window.buttonclick_sound.play()
                     screen.blit(start_window.mode_easy, start_window.mode_easy_rect)
                     easy_or_hard -= 1
+
+                # если checkmark_check == True, то выводим картинки с галочкой
+                elif event.type == pygame.MOUSEBUTTONDOWN and start_window.check_mark_rect.collidepoint(event.pos) and checkmark_check:
+                    pygame.mixer.music.set_volume(1)
+                    start_window.buttonclick_sound.set_volume(1)
+                    start_window.buttonclick_sound.play()
+                    screen.blit(start_window.check_mark, start_window.check_mark_rect)
+                    checkmark_check = False
+
+                # если checkmark_check == False, то выводим картинку без галочки
+                elif event.type == pygame.MOUSEBUTTONDOWN and start_window.no_check_mark_rect.collidepoint(event.pos) and not checkmark_check:
+                    pygame.mixer.music.set_volume(0)
+                    start_window.buttonclick_sound.set_volume(0)
+                    start_window.buttonclick_sound.play()
+                    screen.blit(start_window.no_check_mark, start_window.no_check_mark_rect)
+                    checkmark_check = True
+
+                elif event.type == pygame.MOUSEBUTTONDOWN and start_window.exit_settings_rect.collidepoint(event.pos):
+                    start_window.buttonclick_sound.play()
+                    setting_true = True
 
         pygame.display.flip()
 
