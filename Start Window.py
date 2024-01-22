@@ -278,21 +278,18 @@ if __name__ == '__main__':
                         screen.blit(start_window.menu_33, start_window.menu_33_rect)
                         time.sleep(2)
                         i += 1
-                        print(i)
 
                     # если i == 2, то включаем меню с 66 процентами
                     elif i == 2:
                         screen.blit(start_window.menu_66, start_window.menu_66_rect)
                         time.sleep(2)
                         i += 1
-                        print(i)
 
                     # если i == 3, то включаем меню с 100 процентами
                     elif i == 3:
                         screen.blit(start_window.menu_100, start_window.menu_100_rect)
                         time.sleep(2)
                         i += 1
-                        print(i)
 
                     # если i == 4, то включаем меню с 100 процентами и запускаем игру
                     elif i >= 4:
