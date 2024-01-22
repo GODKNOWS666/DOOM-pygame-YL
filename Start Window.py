@@ -2,7 +2,7 @@ import sys
 import time
 import pygame
 
-#создаем поле
+# создаем поле
 pygame.init()
 size = width, height = 1280, 720
 screen = pygame.display.set_mode(size)
@@ -30,7 +30,10 @@ class StartWindow:
         screen.blit(self.settings_button, self.settings_button_rect)
 
         # Кнопка "выход"
-        self.exit_button = pygame.image.load('Картинки/выход.png')
+        f = open('Картинки/file_name_exit', 'r', encoding='utf8')
+        exit_file = f.read()
+        print(exit_file)
+        self.exit_button = pygame.image.load(exit_file)
         self.exit_button = pygame.transform.scale(self.exit_button, (678, 95))
         self.exit_button_rect = self.exit_button.get_rect(topleft=(302, 550))
         screen.blit(self.exit_button, self.exit_button_rect)
@@ -57,7 +60,6 @@ class StartWindow:
 
         # звук при нажатии кнопки
         self.buttonclick_sound = pygame.mixer.Sound("Звуки/click button.mp3")
-
 
     def settings(self):
         # Главное окно
@@ -168,23 +170,31 @@ if __name__ == '__main__':
 
             # если окно настроек выведено
             else:
+                if not checkmark_check:
+                    screen.blit(start_window.check_mark, start_window.check_mark_rect)
+                else:
+                    screen.blit(start_window.no_check_mark, start_window.no_check_mark_rect)
+
                 if event.type == pygame.QUIT:
                     running = False
 
                 # если стоит сложный режим, то выводим картинку со сложным режимом
-                elif event.type == pygame.MOUSEBUTTONDOWN and start_window.mode_easy_rect.collidepoint(event.pos) and easy_or_hard == 0:
+                elif event.type == pygame.MOUSEBUTTONDOWN and start_window.mode_easy_rect.collidepoint(
+                        event.pos) and easy_or_hard == 0:
                     start_window.buttonclick_sound.play()
                     screen.blit(start_window.mode_hard, start_window.mode_hard_rect)
                     easy_or_hard += 1
 
                 # если стоит легкий режим, то выводим картинку с легким режимом
-                elif event.type == pygame.MOUSEBUTTONDOWN and start_window.mode_hard_rect.collidepoint(event.pos) and easy_or_hard == 1:
+                elif event.type == pygame.MOUSEBUTTONDOWN and start_window.mode_hard_rect.collidepoint(
+                        event.pos) and easy_or_hard == 1:
                     start_window.buttonclick_sound.play()
                     screen.blit(start_window.mode_easy, start_window.mode_easy_rect)
                     easy_or_hard -= 1
 
                 # если checkmark_check == True, то выводим картинки с галочкой
-                elif event.type == pygame.MOUSEBUTTONDOWN and start_window.check_mark_rect.collidepoint(event.pos) and checkmark_check:
+                elif event.type == pygame.MOUSEBUTTONDOWN and start_window.check_mark_rect.collidepoint(
+                        event.pos) and checkmark_check:
                     pygame.mixer.music.set_volume(1)
                     start_window.buttonclick_sound.set_volume(1)
                     start_window.buttonclick_sound.play()
@@ -192,7 +202,8 @@ if __name__ == '__main__':
                     checkmark_check = False
 
                 # если checkmark_check == False, то выводим картинку без галочки
-                elif event.type == pygame.MOUSEBUTTONDOWN and start_window.no_check_mark_rect.collidepoint(event.pos) and not checkmark_check:
+                elif event.type == pygame.MOUSEBUTTONDOWN and start_window.no_check_mark_rect.collidepoint(
+                        event.pos) and not checkmark_check:
                     pygame.mixer.music.set_volume(0)
                     start_window.buttonclick_sound.set_volume(0)
                     start_window.buttonclick_sound.play()
@@ -204,6 +215,3 @@ if __name__ == '__main__':
                     setting_true = True
 
         pygame.display.flip()
-
-
-
