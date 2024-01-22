@@ -2,10 +2,41 @@ import sys
 import time
 import pygame
 
-#создаем поле
+from settings import *
+from player import Player
+import math
+from map import world_map
+from drawing import Draw
+
+# создаем поле
 pygame.init()
 size = width, height = 1280, 720
 screen = pygame.display.set_mode(size)
+
+
+# класс начала игры
+def start_game():
+    pygame.init()
+    sc = pygame.display.set_mode((WIDTH, HEIGHT))
+    sc_map = pygame.Surface((WIDTH // MAP_SCALE, HEIGHT // MAP_SCALE))
+    clock = pygame.time.Clock()
+    player = Player()
+    drawing = Draw(sc, sc_map)
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit()
+        player.movement()
+        sc.fill(BLACK)
+
+        drawing.back()
+        drawing.walls(player.pos, player.angle)
+        drawing.fps(clock)
+        # drawing.mini_map(player)
+
+        pygame.display.flip()
+        clock.tick()
 
 
 # главное меню
@@ -58,7 +89,6 @@ class StartWindow:
         # звук при нажатии кнопки
         self.buttonclick_sound = pygame.mixer.Sound("Звуки/click button.mp3")
 
-
     def settings(self):
         # Главное окно
         self.settings_window = pygame.image.load('Картинки/окно настроек.png')
@@ -96,16 +126,28 @@ class StartWindow:
         self.exit_settings_rect = self.settings_window.get_rect(topleft=(1055, 105))
         screen.blit(self.exit_settings, self.exit_settings_rect)
 
+
+    # функция для картинок загрузки игры
+    def loading_menu(self):
+        #загрузка на 33 процента
+        self.menu_33 = pygame.image.load('Картинки/картинка менюшки 3.png')
+        self.menu_33 = pygame.transform.scale(self.menu_33, (1280, 720))
+        self.menu_33_rect = self.menu_33.get_rect(topleft=(0, 0))
+
+        #загрузка на 66 процентов
+        self.menu_66 = pygame.image.load('Картинки/картинка для менюшка 2.png')
+        self.menu_66 = pygame.transform.scale(self.menu_66, (1280, 720))
+        self.menu_66_rect = self.menu_66.get_rect(topleft=(0, 0))
+
+        #загрузка на 100 процентов
+        self.menu_100 = pygame.image.load('Картинки/картинка для главного меню.png')
+        self.menu_100 = pygame.transform.scale(self.menu_100, (1280, 720))
+        self.menu_100_rect = self.menu_100.get_rect(topleft=(0, 0))
+
     # функция для выхода из игры
     def exit_game(self):
         pygame.quit()
         sys.exit()
-
-
-# класс начала игры
-class StartGame:
-    def __init__(self):
-        pass
 
 
 if __name__ == '__main__':
@@ -114,19 +156,24 @@ if __name__ == '__main__':
     start_window = StartWindow()
     pygame.display.flip()
     # переменные для проверки чего-либо
+    chislo = 0
     # переменная для проверки на то, выведено ли окно настроек на экран
     setting_true = True
     # переменная для проверки галочки
     checkmark_check = False
     # переменная для проверки на сложность режима
     easy_or_hard = 0
-
+    # переменная для проверки началась игра или нет
+    loading_true = False
+    # переменная для проверки началась игра или нет
     running = True
+    # переменная для проверки слайда с загрузкой
+    i = 1
     while running:
         events = pygame.event.get()
         for event in events:
             # если окно настроек не выведено
-            if setting_true:
+            if setting_true and not loading_true:
                 if event.type == pygame.QUIT:
                     running = False
 
@@ -137,7 +184,9 @@ if __name__ == '__main__':
                 # издать звук и начать игру, если кликаем по кнопке "играть"
                 elif event.type == pygame.MOUSEBUTTONDOWN and start_window.start_button_rect.collidepoint(event.pos):
                     start_window.buttonclick_sound.play()
-                    StartGame()
+                    screen.blit(start_window.hover_start_button, start_window.hover_start_button_rect)
+                    loading_true = True
+                    start_window.loading_menu()
 
                 # изменить кнопку на ховер версию, если наводимся мышкой на кнопку "настройки"
                 elif event.type == pygame.MOUSEMOTION and start_window.settings_button_rect.collidepoint(event.pos):
@@ -166,25 +215,39 @@ if __name__ == '__main__':
                     screen.blit(start_window.settings_button, start_window.settings_button_rect)
                     screen.blit(start_window.exit_button, start_window.exit_button_rect)
 
-            # если окно настроек выведено
-            else:
+            # если окно настроек выведено и игра не началась
+            elif not setting_true and not loading_true:
+                # если галка стоит, то выводим галку (штука, чтобы не сбивались настройки)
+                if not checkmark_check:
+                    screen.blit(start_window.check_mark, start_window.check_mark_rect)
+                else:
+                    screen.blit(start_window.no_check_mark, start_window.no_check_mark_rect)
+
+                # если стоит легкий, то выводим легкий (штука, чтобы не сбивались настройки)
+                if easy_or_hard == 0:
+                    screen.blit(start_window.mode_easy, start_window.mode_easy_rect)
+                else:
+                    screen.blit(start_window.mode_hard, start_window.mode_hard_rect)
+
                 if event.type == pygame.QUIT:
                     running = False
-
                 # если стоит сложный режим, то выводим картинку со сложным режимом
-                elif event.type == pygame.MOUSEBUTTONDOWN and start_window.mode_easy_rect.collidepoint(event.pos) and easy_or_hard == 0:
+                elif event.type == pygame.MOUSEBUTTONDOWN and start_window.mode_easy_rect.collidepoint(
+                        event.pos) and easy_or_hard == 0:
                     start_window.buttonclick_sound.play()
                     screen.blit(start_window.mode_hard, start_window.mode_hard_rect)
                     easy_or_hard += 1
 
                 # если стоит легкий режим, то выводим картинку с легким режимом
-                elif event.type == pygame.MOUSEBUTTONDOWN and start_window.mode_hard_rect.collidepoint(event.pos) and easy_or_hard == 1:
+                elif event.type == pygame.MOUSEBUTTONDOWN and start_window.mode_hard_rect.collidepoint(
+                        event.pos) and easy_or_hard == 1:
                     start_window.buttonclick_sound.play()
                     screen.blit(start_window.mode_easy, start_window.mode_easy_rect)
                     easy_or_hard -= 1
 
                 # если checkmark_check == True, то выводим картинки с галочкой
-                elif event.type == pygame.MOUSEBUTTONDOWN and start_window.check_mark_rect.collidepoint(event.pos) and checkmark_check:
+                elif event.type == pygame.MOUSEBUTTONDOWN and start_window.check_mark_rect.collidepoint(
+                        event.pos) and checkmark_check:
                     pygame.mixer.music.set_volume(1)
                     start_window.buttonclick_sound.set_volume(1)
                     start_window.buttonclick_sound.play()
@@ -192,18 +255,49 @@ if __name__ == '__main__':
                     checkmark_check = False
 
                 # если checkmark_check == False, то выводим картинку без галочки
-                elif event.type == pygame.MOUSEBUTTONDOWN and start_window.no_check_mark_rect.collidepoint(event.pos) and not checkmark_check:
+                elif event.type == pygame.MOUSEBUTTONDOWN and start_window.no_check_mark_rect.collidepoint(
+                        event.pos) and not checkmark_check:
                     pygame.mixer.music.set_volume(0)
                     start_window.buttonclick_sound.set_volume(0)
                     start_window.buttonclick_sound.play()
                     screen.blit(start_window.no_check_mark, start_window.no_check_mark_rect)
                     checkmark_check = True
 
+                #кнопка выхода
                 elif event.type == pygame.MOUSEBUTTONDOWN and start_window.exit_settings_rect.collidepoint(event.pos):
                     start_window.buttonclick_sound.play()
                     setting_true = True
 
+            # если нажали на кнопку старта и не нажали на настройки, включаем загрузку и запускаем игру
+            elif loading_true and setting_true:
+                if event.type == pygame.QUIT:
+                    running = False
+                else:
+                    # если i == 1, то включаем меню с 33 процентами
+                    if i == 1:
+                        screen.blit(start_window.menu_33, start_window.menu_33_rect)
+                        time.sleep(2)
+                        i += 1
+                        print(i)
+
+                    # если i == 2, то включаем меню с 66 процентами
+                    elif i == 2:
+                        screen.blit(start_window.menu_66, start_window.menu_66_rect)
+                        time.sleep(2)
+                        i += 1
+                        print(i)
+
+                    # если i == 3, то включаем меню с 100 процентами
+                    elif i == 3:
+                        screen.blit(start_window.menu_100, start_window.menu_100_rect)
+                        time.sleep(2)
+                        i += 1
+                        print(i)
+
+                    # если i == 4, то включаем меню с 100 процентами и запускаем игру
+                    elif i >= 4:
+                        screen.blit(start_window.menu_100, start_window.menu_100_rect)
+                        time.sleep(1)
+                        start_game()
+
         pygame.display.flip()
-
-
-
