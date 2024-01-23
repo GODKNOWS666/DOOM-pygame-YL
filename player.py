@@ -8,7 +8,7 @@ class Player:
     def __init__(self):
         self.x, self.y = player_pos
         self.angle = player_angle
-
+        self.delta_time = delta_time()
         self.side = 20
         self.rect = pygame.Rect(*player_pos, self.side, self.side)
 
@@ -49,22 +49,22 @@ class Player:
         if keys[pygame.K_ESCAPE]:
             exit()
         if keys[pygame.K_w]:
-            dx = player_speed * cos_a
-            dy = player_speed * sin_a
+            dx = player_speed * cos_a * self.delta_time
+            dy = player_speed * sin_a * self.delta_time
             self.detect_collision(dx, dy)
         if keys[pygame.K_s]:
-            dx = -player_speed * cos_a
-            dy = -player_speed * sin_a
+            dx = -player_speed * cos_a * self.delta_time
+            dy = -player_speed * sin_a * self.delta_time
             self.detect_collision(dx, dy)
         if keys[pygame.K_a]:
-            dx = player_speed * sin_a
-            dy = -player_speed * cos_a
+            dx = player_speed * sin_a * self.delta_time
+            dy = -player_speed * cos_a * self.delta_time
             self.detect_collision(dx, dy)
         if keys[pygame.K_d]:
-            dx = -player_speed * sin_a
-            dy = player_speed * cos_a
+            dx = -player_speed * sin_a * self.delta_time
+            dy = player_speed * cos_a * self.delta_time
             self.detect_collision(dx, dy)
         if keys[pygame.K_LEFT]:
-            self.angle -= 0.02
+            self.angle -= 0.02 * self.delta_time
         if keys[pygame.K_RIGHT]:
-            self.angle += 0.02
+            self.angle += 0.02 * self.delta_time

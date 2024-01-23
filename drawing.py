@@ -3,15 +3,14 @@ from settings import *
 from ray_casting import ray_casting
 from map import mini_map
 
-
 class Drawing:
     def __init__(self, sc, sc_map):
         self.sc = sc
         self.sc_map = sc_map
         self.font = pygame.font.SysFont('Arial', 36, bold=True)
-        self.textures = {'1': pygame.image.load('Картинки/anotherwall.jpg').convert(),
-                         '2': pygame.image.load('Картинки/stena.jpg').convert(),
-                         'S': pygame.image.load('Картинки/skystepi.jpg').convert()
+        self.textures = {'1': pygame.image.load('Sk/Картинки/anotherwall.jpg').convert(),
+                         '2': pygame.image.load('Sk/Картинки/stena.jpg').convert(),
+                         'S': pygame.image.load('Sk/Картинки/skystepi.jpg').convert()
                          }
 
     def background(self, angle):

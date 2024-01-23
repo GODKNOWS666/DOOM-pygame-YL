@@ -1,4 +1,6 @@
 import math
+import time
+
 
 # game settings
 WIDTH = 1200
@@ -45,3 +47,12 @@ PURPLE = (120, 0, 120)
 SKYBLUE = (0, 186, 255)
 YELLOW = (220, 220, 0)
 SANDY = (244, 164, 96)
+
+
+cur_time = time.time_ns()
+
+def delta_time():
+    global cur_time
+    delta = (time.time_ns() - cur_time)/ 100000000
+    cur_time = time.time_ns()
+    return delta
