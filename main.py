@@ -7,6 +7,7 @@ from drawing import Drawing
 from gun import Gun
 from enemy import Enemy
 from interface import Interface
+
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 sc_map = pygame.Surface((WIDTH // MAP_SCALE, HEIGHT // MAP_SCALE))
@@ -46,7 +47,7 @@ while True:
     drawing.mini_map(player)
     # КОНЕЦ ИГРЫ
     if player.HP <= 0:
-        pass
+        exit()
 #действия врагов{
                 
     enemies[0][0].following(player)

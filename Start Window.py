@@ -7,36 +7,65 @@ from player import Player
 import math
 from map import world_map
 from drawing import Drawing
+from gun import Gun
+from enemy import Enemy
+from interface import Interface
+
 
 # создаем поле
 pygame.init()
 size = width, height = 1280, 720
-screen = pygame.display.set_mode(size)
+screen = pygame.display.set_mode((width, height))
 
 
 # класс начала игры
 def start_game():
-    pygame.init()
     sc = pygame.display.set_mode((WIDTH, HEIGHT))
     sc_map = pygame.Surface((WIDTH // MAP_SCALE, HEIGHT // MAP_SCALE))
     clock = pygame.time.Clock()
     player = Player()
     drawing = Drawing(sc, sc_map)
-
+    enemies = list()
+    enemies.append([Enemy()])
+    gun = Gun()
+    interface = Interface()
     while True:
+        if gun.i >= 7:
+            gun.i = 0
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    gun.shot(screen, drawing, player, clock)
+                if event.key == pygame.K_g:
+                    player.HP -= 1
+                    print(player.HP)
         player.movement()
-        sc.fill(BLACK)
-
+        screen.fill(BLACK)
         drawing.background(player.angle)
         drawing.world(player.pos, player.angle)
         drawing.fps(clock)
-        # drawing.mini_map(player)
+
+        # Анимация оружия
+        screen.blit(gun.gun_animation[0], (WIDTH // 4, HEIGHT // 2.5))
+        if gun.i != 0:
+            gun.shot(screen, drawing, player, clock)
+        # Отрисовка интерфейса
+        interface.draw_interface(screen)
+        interface.draw_HP(screen, player.HP)
+        drawing.mini_map(player)
+        # КОНЕЦ ИГРЫ
+        if player.HP <= 0:
+            exit()
+        # действия врагов{
+
+        enemies[0][0].following(player)
+        pygame.draw.circle(screen, (155, 0, 0), enemies[0][0].pos, 10)
+        pygame.draw.line(screen, (155, 0, 0), enemies[0][0].pos, (player.x, player.y))
 
         pygame.display.flip()
-        clock.tick()
+        clock.tick(18)
 
 
 # главное меню
@@ -44,84 +73,84 @@ class StartWindow:
     def __init__(self):
         # все картинки для главного меню
         # бэкграунд
-        self.menu_background = pygame.image.load('Sk/Картинки/картинка меню.png')
+        self.menu_background = pygame.image.load('Картинки/картинка меню.png')
         screen.fill((0, 0, 0))
         screen.blit(self.menu_background, (0, 0))
 
         # Кнопка "играть"
-        self.start_button = pygame.image.load('Sk/Картинки/играть.png')
+        self.start_button = pygame.image.load('Картинки/играть.png')
         self.start_button = pygame.transform.scale(self.start_button, (678, 95))
         self.start_button_rect = self.start_button.get_rect(topleft=(302, 250))
         screen.blit(self.start_button, self.start_button_rect)
 
         # Кнопка "настройки"
-        self.settings_button = pygame.image.load('Sk/Картинки/настройки.png')
+        self.settings_button = pygame.image.load('Картинки/настройки.png')
         self.settings_button = pygame.transform.scale(self.settings_button, (678, 95))
         self.settings_button_rect = self.settings_button.get_rect(topleft=(302, 400))
         screen.blit(self.settings_button, self.settings_button_rect)
 
         # Кнопка "выход"
-        self.exit_button = pygame.image.load('Sk/Картинки/выход.png')
+        self.exit_button = pygame.image.load('Картинки/выход.png')
         self.exit_button = pygame.transform.scale(self.exit_button, (678, 95))
         self.exit_button_rect = self.exit_button.get_rect(topleft=(302, 550))
         screen.blit(self.exit_button, self.exit_button_rect)
 
         # Ховер кнопка "Играть"
-        self.hover_start_button = pygame.image.load('Sk/Картинки/играть реверс.png')
+        self.hover_start_button = pygame.image.load('Картинки/играть реверс.png')
         self.hover_start_button = pygame.transform.scale(self.hover_start_button, (678, 95))
         self.hover_start_button_rect = self.hover_start_button.get_rect(topleft=(302, 250))
 
         # Ховер кнопка "Настройки"
-        self.hover_settings_button = pygame.image.load('Sk/Картинки/настройки реверс.png')
+        self.hover_settings_button = pygame.image.load('Картинки/настройки реверс.png')
         self.hover_settings_button = pygame.transform.scale(self.hover_settings_button, (678, 95))
         self.hover_settings_button_rect = self.hover_settings_button.get_rect(topleft=(302, 400))
 
         # Ховер кнопка "Выход"
-        self.hover_exit_button = pygame.image.load('Sk/Картинки/выход реверс.png')
+        self.hover_exit_button = pygame.image.load('Картинки/выход реверс.png')
         self.hover_exit_button = pygame.transform.scale(self.hover_exit_button, (678, 95))
         self.hover_exit_button_rect = self.hover_exit_button.get_rect(topleft=(302, 550))
 
         # музыка и звуки в менюшке
         # главная тема
-        pygame.mixer.music.load("Sk/Звуки/Main Theme.mp3")
+        pygame.mixer.music.load("Звуки/Main Theme.mp3")
         pygame.mixer.music.play(-1)
 
         # звук при нажатии кнопки
-        self.buttonclick_sound = pygame.mixer.Sound("Sk/Звуки/click button.mp3")
+        self.buttonclick_sound = pygame.mixer.Sound("Звуки/click button.mp3")
 
     def settings(self):
         # Главное окно
-        self.settings_window = pygame.image.load('Sk/Картинки/окно настроек.png')
+        self.settings_window = pygame.image.load('Картинки/окно настроек.png')
         self.settings_window = pygame.transform.scale(self.settings_window, (1280, 720))
         self.settings_window_rect = self.settings_window.get_rect(topleft=(0, 30))
         screen.blit(self.settings_window, self.settings_window_rect)
 
         # Кнопка "сложно" для изменения режима игры
-        self.mode_hard = pygame.image.load('Sk/Картинки/сложно.png')
+        self.mode_hard = pygame.image.load('Картинки/сложно.png')
         self.mode_hard = pygame.transform.scale(self.mode_hard, (337, 61))
         self.mode_hard_rect = self.settings_window.get_rect(topleft=(727, 210))
         screen.blit(self.mode_hard, self.mode_hard_rect)
 
         # Кнопка "легко" для изменения режима игры
-        self.mode_easy = pygame.image.load('Sk/Картинки/легко.png')
+        self.mode_easy = pygame.image.load('Картинки/легко.png')
         self.mode_easy = pygame.transform.scale(self.mode_easy, (337, 61))
         self.mode_easy_rect = self.settings_window.get_rect(topleft=(727, 210))
         screen.blit(self.mode_easy, self.mode_easy_rect)
 
         # Квадрат без галочки
-        self.no_check_mark = pygame.image.load('Sk/Картинки/квадрат без галочки.png')
+        self.no_check_mark = pygame.image.load('Картинки/квадрат без галочки.png')
         self.no_check_mark = pygame.transform.scale(self.no_check_mark, (114, 104))
         self.no_check_mark_rect = self.settings_window.get_rect(topleft=(570, 425))
         screen.blit(self.no_check_mark, self.no_check_mark_rect)
 
         # Квадрат с галочкой
-        self.check_mark = pygame.image.load('Sk/Картинки/квадрат с галочкой.png')
+        self.check_mark = pygame.image.load('Картинки/квадрат с галочкой.png')
         self.check_mark = pygame.transform.scale(self.check_mark, (114, 104))
         self.check_mark_rect = self.settings_window.get_rect(topleft=(570, 425))
         screen.blit(self.check_mark, self.check_mark_rect)
 
         # кнопка выхода из настроек
-        self.exit_settings = pygame.image.load('Sk/Картинки/Кнопка выхода из настроек.png')
+        self.exit_settings = pygame.image.load('Картинки/Кнопка выхода из настроек.png')
         self.exit_settings = pygame.transform.scale(self.exit_settings, (115, 115))
         self.exit_settings_rect = self.settings_window.get_rect(topleft=(1055, 105))
         screen.blit(self.exit_settings, self.exit_settings_rect)
@@ -130,17 +159,17 @@ class StartWindow:
     # функция для картинок загрузки игры
     def loading_menu(self):
         #загрузка на 33 процента
-        self.menu_33 = pygame.image.load('Sk/Картинки/картинка менюшки 3.png')
+        self.menu_33 = pygame.image.load('Картинки/картинка менюшки 3.png')
         self.menu_33 = pygame.transform.scale(self.menu_33, (1280, 720))
         self.menu_33_rect = self.menu_33.get_rect(topleft=(0, 0))
 
         #загрузка на 66 процентов
-        self.menu_66 = pygame.image.load('Sk/Картинки/картинка для менюшка 2.png')
+        self.menu_66 = pygame.image.load('Картинки/картинка для менюшка 2.png')
         self.menu_66 = pygame.transform.scale(self.menu_66, (1280, 720))
         self.menu_66_rect = self.menu_66.get_rect(topleft=(0, 0))
 
         #загрузка на 100 процентов
-        self.menu_100 = pygame.image.load('Sk/Картинки/картинка для главного меню.png')
+        self.menu_100 = pygame.image.load('Картинки/картинка для главного меню.png')
         self.menu_100 = pygame.transform.scale(self.menu_100, (1280, 720))
         self.menu_100_rect = self.menu_100.get_rect(topleft=(0, 0))
 
