@@ -37,7 +37,7 @@ def start_game():
                 exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    gun.shot(screen, drawing, player, clock)
+                    gun.shot(sc, drawing, player, clock)
                 if event.key == pygame.K_g:
                     player.HP -= 1
                     print(player.HP)
@@ -48,12 +48,12 @@ def start_game():
         drawing.fps(clock)
 
         # Анимация оружия
-        screen.blit(gun.gun_animation[0], (WIDTH // 4, HEIGHT // 2.5))
+        sc.blit(gun.gun_animation[0], (WIDTH // 4, HEIGHT // 2.5))
         if gun.i != 0:
-            gun.shot(screen, drawing, player, clock)
+            gun.shot(sc, drawing, player, clock)
         # Отрисовка интерфейса
-        interface.draw_interface(screen)
-        interface.draw_HP(screen, player.HP)
+        interface.draw_interface(sc)
+        interface.draw_HP(sc, player.HP)
         drawing.mini_map(player)
         # КОНЕЦ ИГРЫ
         if player.HP <= 0:
@@ -61,8 +61,8 @@ def start_game():
         # действия врагов{
 
         enemies[0][0].following(player)
-        pygame.draw.circle(screen, (155, 0, 0), enemies[0][0].pos, 10)
-        pygame.draw.line(screen, (155, 0, 0), enemies[0][0].pos, (player.x, player.y))
+        pygame.draw.circle(sc, (155, 0, 0), enemies[0][0].pos, 10)
+        pygame.draw.line(sc, (155, 0, 0), enemies[0][0].pos, (player.x, player.y))
 
         pygame.display.flip()
         clock.tick(18)

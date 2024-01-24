@@ -14,7 +14,7 @@ FPS_POS = (WIDTH - 65, 5)
 # minimap settings
 MAP_SCALE = 6
 MAP_TILE = TILE // MAP_SCALE
-MAP_POS = (0, HEIGHT - HEIGHT // MAP_SCALE)
+MAP_POS = (0, HEIGHT - HEIGHT // MAP_SCALE + 5)
 
 # ray casting settings
 FOV = math.pi / 3
@@ -26,7 +26,6 @@ DIST = NUM_RAYS / (2 * math.tan(HALF_FOV))
 PROJ_COEFF = 2 * DIST * TILE
 SCALE = WIDTH // NUM_RAYS
 
-# texture settings (1200 x 1200)
 TEXTURE_WIDTH = 512
 TEXTURE_HEIGHT = 512
 TEXTURE_SCALE = TEXTURE_WIDTH // TILE
@@ -55,8 +54,9 @@ SANDY = (244, 164, 96)
 
 cur_time = time.time_ns()
 
+
 def delta_time():
     global cur_time
-    delta = (time.time_ns() - cur_time)/ 100000000000
+    delta = (time.time_ns() - cur_time)/ 10000000000
     cur_time = time.time_ns()
     return delta
