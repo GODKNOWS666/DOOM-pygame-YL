@@ -11,6 +11,7 @@ class Player:
         self.delta_time = delta_time()
         self.side = 20
         self.rect = pygame.Rect(*player_pos, self.side, self.side)
+        self.HP = 15
 
     @property
     def pos(self):
@@ -65,6 +66,6 @@ class Player:
             dy = player_speed * cos_a * self.delta_time
             self.detect_collision(dx, dy)
         if keys[pygame.K_LEFT]:
-            self.angle -= 0.02 * self.delta_time
+            self.angle -= 0.2 * self.delta_time
         if keys[pygame.K_RIGHT]:
-            self.angle += 0.02 * self.delta_time
+            self.angle += 0.2 * self.delta_time

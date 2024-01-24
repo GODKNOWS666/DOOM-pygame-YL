@@ -12,7 +12,7 @@ TILE = 100
 FPS_POS = (WIDTH - 65, 5)
 
 # minimap settings
-MAP_SCALE = 5
+MAP_SCALE = 6
 MAP_TILE = TILE // MAP_SCALE
 MAP_POS = (0, HEIGHT - HEIGHT // MAP_SCALE)
 
@@ -34,7 +34,11 @@ TEXTURE_SCALE = TEXTURE_WIDTH // TILE
 # player settings
 player_pos = (HALF_WIDTH, HALF_HEIGHT)
 player_angle = 0
-player_speed = 2
+player_speed = 20
+MAX_XP = 15
+
+# enemy settings
+enemy_speed = 0.1
 
 # colors
 WHITE = (255, 255, 255)
@@ -53,6 +57,6 @@ cur_time = time.time_ns()
 
 def delta_time():
     global cur_time
-    delta = (time.time_ns() - cur_time)/ 100000000
+    delta = (time.time_ns() - cur_time)/ 1000000000
     cur_time = time.time_ns()
     return delta

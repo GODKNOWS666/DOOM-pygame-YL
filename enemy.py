@@ -9,7 +9,7 @@ player = Player
 class Enemy:
     def __init__(self):
         self.pos = [randint(100,500), randint(100,500)]
-        self.speed = 1000
+        self.speed = 2
         self.delta = 0
         self.zone = 20
         self.zone_vison = 250
@@ -20,22 +20,22 @@ class Enemy:
     
     def danger_zone(self, player):
         player.HP -= 1
-
+    # Следует за игроком
     def following(self, player):
         x_pl, y_pl = player.x, player.y
 
         if self.pos[0] < x_pl - self.zone and (self.pos[0] > x_pl - self.zone_vison):
             if self.pos[1] > y_pl - self.zone_vison and (self.pos[1] < y_pl + self.zone_vison):
-                self.pos[0] += enemy_speed
+                self.pos[0] += self.speed
 
         elif self.pos[0] > x_pl + self.zone and (self.pos[0] < x_pl + self.zone_vison):
             if self.pos[1] > y_pl - self.zone_vison and (self.pos[1] < y_pl + self.zone_vison):
-                self.pos[0] -= enemy_speed
+                self.pos[0] -= self.speed
 
         if self.pos[1] < y_pl - self.zone and (self.pos[1] > y_pl - self.zone_vison):
             if self.pos[0] > x_pl - self.zone_vison and (self.pos[0] < x_pl + self.zone_vison):
-                self.pos[1] += enemy_speed
+                self.pos[1] += self.speed
 
         elif self.pos[1] > y_pl + self.zone and (self.pos[1] < y_pl + self.zone_vison):
             if self.pos[0] > x_pl - self.zone_vison and (self.pos[0] < x_pl + self.zone_vison):
-                self.pos[1] -= enemy_speed
+                self.pos[1] -= self.speed

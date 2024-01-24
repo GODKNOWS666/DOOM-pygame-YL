@@ -21,8 +21,8 @@ class Gun:
         clock.tick(25)
         # Анимация огня выстрела
         if self.i < 3:
-            screen.blit(self.fire_animation[self.i], (WIDTH // 3 + 50, HEIGHT // 3))
-            screen.blit(self.gun_animation[0], (WIDTH // 4, HEIGHT // 3))
+            screen.blit(self.fire_animation[self.i], (WIDTH // 3 + 50, HEIGHT // 2.5))
+            screen.blit(self.gun_animation[0], (WIDTH // 4, HEIGHT // 2.5))
         # Анимация ствола выстрела
         if self.i >= 3:
             self.i -= 3
