@@ -13,10 +13,18 @@ sc_map = pygame.Surface((WIDTH // MAP_SCALE, HEIGHT // MAP_SCALE))
 clock = pygame.time.Clock()
 player = Player()
 drawing = Drawing(screen, sc_map)
+
 # Список врагов
 enemies = list()
-enemies.append([Enemy()])
+#Добавление врага на карту
+enemies.append(Enemy(enemies))
+enemies.append(Enemy(enemies))
+enemies.append(Enemy(enemies))
+enemies.append(Enemy(enemies))
+
+
 gun = Gun()
+
 interface = Interface()
 while True:
     if gun.i >= 7:
@@ -48,11 +56,8 @@ while True:
     if player.HP <= 0:
         pass
 #действия врагов{
-                
-    enemies[0][0].following(player)
-    pygame.draw.circle(screen, (155, 0, 0), enemies[0][0].pos, 10)
-    pygame.draw.line(screen, (155, 0, 0), enemies[0][0].pos, (player.x, player.y))
-
+    for this_enemy in enemies:
+        this_enemy.enemy_event(screen, player, enemies)
 #}  
 
 

@@ -1,7 +1,7 @@
 from settings import *
 import pygame
 
-text_map = [
+text_map_1 = [
     '111111111111',
     '1......1...1',
     '1....2...1.1',
@@ -12,10 +12,21 @@ text_map = [
     '1111111111111'
 ]
 
+text_map_2= [
+    '111111111111',
+    '1..........1',
+    '1..........1',
+    '1..........1',
+    '1..........1',
+    '133333333331',
+    '1..........1',
+    '1111111111111'
+]
+
 world_map = {}
 mini_map = set()
 collision_walls = []
-for j, row in enumerate(text_map):
+for j, row in enumerate(text_map_2):
     for i, char in enumerate(row):
         if char != '.':
             mini_map.add((i * MAP_TILE, j * MAP_TILE))
@@ -24,3 +35,5 @@ for j, row in enumerate(text_map):
                 world_map[(i * TILE, j * TILE)] = '1'
             elif char == '2':
                 world_map[(i * TILE, j * TILE)] = '2'
+            elif char == '2':
+                world_map[(i * TILE, j * TILE)] = '3'
